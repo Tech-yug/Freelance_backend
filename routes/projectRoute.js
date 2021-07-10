@@ -18,3 +18,5 @@ router
     .get(getSingleProject)
     .put(updateProjects)
     .delete(deleteProjects)
+
+module.exports = router

@@ -1,12 +1,12 @@
 require('dotenv').config()
-const app = require("express")()
+const express = require('express')
+const app = express()
 
+const projectRoute = require('./routes/projectRoute')
 
-
-
-app.get("/",(req,res)=>{
-    res.send("<h1>Hello</h1>")
-})
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/projects',projectRoute)
 
 
 const PORT = process.env.PORT || 8000
