@@ -11,12 +11,10 @@ const Projects = mongoose.Schema({
         type:String,
         require:true
     },
-
-    password:{
-        type:String,
-        required:true
+    skills:{
+        type: String,
+        required: true
     },
-
     price:{
         type:Number,
         required:true
@@ -25,4 +23,5 @@ const Projects = mongoose.Schema({
 
 },{timeStamp:true})
 
-module.exports = mongoose.model("Projects",Projects) 
+const Project= mongoose.model("project",Projects) 
+module.exports = Project
