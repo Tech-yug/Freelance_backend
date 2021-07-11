@@ -15,7 +15,7 @@ const getProjects = async (req,res) => {
             })
         })
     } catch(error){
-        res.status(500).json({
+        return res.status(500).json({
             message: error.message
         })
     }
@@ -34,7 +34,7 @@ const getSingleProject = async (req,res) => {
             })
         })
     } catch(error){
-        res.status(500).json({
+         res.status(500).json({
             message: error.message
         })
     }
@@ -43,7 +43,10 @@ const getSingleProject = async (req,res) => {
 
 const postProjects = async (req,res) => {
     try{
-        const newproject = new Project({...req.body})
+        const fileArray = req.files
+        const filenamearray = fileArray.map(single => single.filename)
+
+        const newproject = new Project({...req.body, projectfiles: filenamearray})
         newproject.save((error,data) => {
             if(error) return res.send({ message: error.message })
             res.status(201).json({

@@ -7,11 +7,12 @@ const {
     postProjects,
     updateProjects,
     deleteProjects } = require('../controllers/projectController')
+const upload = require('../util.js/fileUpload')
 
 router 
     .route('/')
     .get(getProjects)
-    .post(postProjects)
+    .post(upload.array('projectfiles',5),postProjects)
 
 router 
     .route('/:id')

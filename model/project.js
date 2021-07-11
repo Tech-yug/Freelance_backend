@@ -5,8 +5,7 @@ const Projects = mongoose.Schema({
     projecttitle:{
         type:String,
         required:true
-    },
-
+    }, 
     description:{
         type:String,
         require:true
@@ -18,7 +17,10 @@ const Projects = mongoose.Schema({
     price:{
         type:Number,
         required:true
-    }
+    },
+    projectfiles: [{
+        type: String
+    }]
 
 
 },{timeStamp:true})
