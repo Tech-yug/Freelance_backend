@@ -2,17 +2,14 @@ const Project = require('../model/project')
 
 
 const getProjects = async (req,res) => {
+    const page = parseInt(req.query.page)
+    const limit = parseInt(req.query.limit)
+    const skip = (page - 1) * limit
     try{
-        await Project.find().exec((error,data) => {
-            if(error){
-                return res.status(500).json({
-                    message: error.message
-                })
-            }
-            return res.status(200).json({
-                message: "Successful",
-                projects: data
-            })
+        const projects = await Project.find().sort({ _id:-1 }).limit(limit).skip(skip)
+        return res.status(200).json({
+            message: "Successful",
+            projects
         })
     } catch(error){
         return res.status(500).json({
