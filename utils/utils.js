@@ -11,6 +11,5 @@ exports.sendTokenResponse = (user, statusCode, res) => {
     _id: user._id,
     name: user.name,
     email: user.email,
-    token,
   });
 };
