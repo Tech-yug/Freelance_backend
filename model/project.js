@@ -1,28 +1,29 @@
-const mongoose = require("mongoose");
+const mongoose = require("./index");
 
 const Projects = mongoose.Schema({
 
     projecttitle:{
         type:String,
         required:true
-    },
-
+    }, 
     description:{
         type:String,
         require:true
     },
-
-    password:{
-        type:String,
-        required:true
+    skills:{
+        type: String,
+        required: true
     },
-
     price:{
         type:Number,
         required:true
-    }
+    },
+    projectfiles: [{
+        type: String
+    }]
 
 
 },{timeStamp:true})
 
-module.exports = mongoose.model("Projects",Projects) 
+const Project= mongoose.model("project",Projects) 
+module.exports = Project
