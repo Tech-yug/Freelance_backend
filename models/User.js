@@ -5,11 +5,11 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: [true, "Please enter your name"],
     },
     email: {
       type: String,
-      required: true,
+      required: [true, "Please enter an email"],
       unique: true,
       match: [
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
@@ -18,13 +18,20 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: [true, "Please enter an password"],
+      minlength: [6, "Minimum password length is 6 characters"],
     },
   },
   {
     timestamps: true,
   }
 );
+
+userSchema.pre("save", async function (next) {
+  const salt = await bcrypt.genSalt(8);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
 
 userSchema.methods.generateToken = function () {
   return jwt.sign(

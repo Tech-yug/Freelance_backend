@@ -1,4 +1,3 @@
-const bcrypt = require("bcryptjs");
 const expressAsyncHandler = require("express-async-handler");
 const User = require("../models/User");
 const { sendTokenResponse } = require("../utils/utils");
@@ -8,12 +7,6 @@ exports.register = expressAsyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
 
   let user = await User.findOne({ email: email });
-
-  if (!name || !email || !password) {
-    return res
-      .status(400)
-      .json({ message: "Please fill all the required fields" });
-  }
   if (user) {
     return res.status(400).json({
       message: `User with this email ${email} already exists`,
@@ -22,7 +15,7 @@ exports.register = expressAsyncHandler(async (req, res) => {
   user = new User({
     name,
     email,
-    password: bcrypt.hashSync(password, 8),
+    password,
   });
   const createUser = await user.save();
   sendTokenResponse(createUser, 200, res);
@@ -34,12 +27,14 @@ exports.login = expressAsyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (!user) {
-    return res.status(401).send({ message: "Invalid credentials" });
+    return res
+      .status(401)
+      .send({ message: "Please make sure you entered a correct email" });
   }
 
   const comparePassword = await user.matchPassword(password);
   if (!comparePassword) {
-    return res.status(401).send({ message: "Invalid credentials" });
+    return res.status(401).send({ message: "Incorrect password" });
   }
   sendTokenResponse(user, 200, res);
 });
@@ -79,7 +74,7 @@ exports.updatePassword = expressAsyncHandler(async (req, res) => {
   if (!comparePassword) {
     return res.status(401).send({ message: "Password is incorrect" });
   }
-  user.password = bcrypt.hashSync(req.body.newPassword, 8);
+  user.password = req.body.newPassword;
   await user.save();
   sendTokenResponse(user, 200, res);
 });
