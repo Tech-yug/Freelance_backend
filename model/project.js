@@ -1,4 +1,4 @@
-const mongoose = require("./index");
+const mongoose = require("mongoose");
 
 const Projects = mongoose.Schema({
 
@@ -20,7 +20,11 @@ const Projects = mongoose.Schema({
     },
     projectfiles: [{
         type: String
-    }]
+    }],
+    user:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user'
+    }
 
 
 },{timeStamp:true})
