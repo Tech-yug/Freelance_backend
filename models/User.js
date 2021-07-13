@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const { countDocuments } = require("d:/materials/devcampher/models/usermodels");
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -21,6 +22,8 @@ const userSchema = new mongoose.Schema(
       required: [true, "Please enter an password"],
       minlength: [6, "Minimum password length is 6 characters"],
     },
+    otpCode: String,
+    otpCodeExpire: Date,
   },
   {
     timestamps: true,
@@ -40,13 +43,20 @@ userSchema.methods.generateToken = function () {
     },
     process.env.JWT_SECRET,
     {
-      expiresIn: "30d",
+      expiresIn: process.env.JWT_EXPIRE,
     }
   );
 };
 
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
+};
+
+userSchema.methods.generateOtp = function () {
+  const code = Math.floor(Math.random() * 10000 + 1);
+  this.otpCode = code;
+  this.otpCodeExpire = Date.now() + 300 * 1000;
+  return code;
 };
 
 const userModel = mongoose.model("User", userSchema);

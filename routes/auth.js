@@ -5,6 +5,8 @@ const {
   logout,
   updateUser,
   updatePassword,
+  forgetPassword,
+  resetPassword,
 } = require("../controllers/auth");
 const router = express.Router();
 const { isAuth } = require("../middleware/auth");
@@ -14,6 +16,8 @@ router
   .post("/login", login)
   .get("/logout", logout)
   .put("/updateuser", isAuth, updateUser)
-  .put("/updatepassword", isAuth, updatePassword);
+  .put("/updatepassword", isAuth, updatePassword)
+  .post("/forgetpassword", forgetPassword)
+  .put("/resetPassword", resetPassword);
 
 module.exports = router;

@@ -1,6 +1,7 @@
 const expressAsyncHandler = require("express-async-handler");
 const User = require("../models/User");
-const { sendTokenResponse } = require("../utils/utils");
+const { sendTokenResponse } = require("../utils/tokenResponse");
+const sendEmail = require("../utils/sendEmail");
 
 //route GET/api/auth/register
 exports.register = expressAsyncHandler(async (req, res) => {
@@ -75,6 +76,49 @@ exports.updatePassword = expressAsyncHandler(async (req, res) => {
     return res.status(401).send({ message: "Password is incorrect" });
   }
   user.password = req.body.newPassword;
+  await user.save();
+  sendTokenResponse(user, 200, res);
+});
+
+//POST api/auth/forgetpassword
+exports.forgetPassword = expressAsyncHandler(async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res
+      .status(401)
+      .send({ message: `The user with this email ${email} dosenot exist` });
+  }
+
+  const otpCode = user.generateOtp();
+  await user.save({ validateBeforeSave: false });
+
+  const content = `You are receiving this email because you have requested the reset of your password.
+verification code:  ${otpCode} `;
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: "Verification code",
+      content,
+    });
+    res.status(200).send({ message: "Please check your email" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ message: "Email could not be sent" });
+  }
+});
+
+//PUT api/auth/resetpassword
+exports.resetPassword = expressAsyncHandler(async (req, res) => {
+  const { otpCode } = req.body;
+  const user = await User.findOne({
+    otpCode,
+    otpCodeExpire: { $gt: Date.now() },
+  });
+  if (!user) {
+    return res.status(400).send({ message: "Invalid otp" });
+  }
+  user.password = req.body.password;
   await user.save();
   sendTokenResponse(user, 200, res);
 });
