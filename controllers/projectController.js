@@ -8,8 +8,10 @@ const getProjects = async (req,res) => {
     try{
         const projects = await Project.find().sort({ _id:-1 }).limit(limit).skip(skip)
         return res.status(200).json({
-            message: "Successful",
-            projects
+            success: true,
+            status: 200,
+            message: "Projects fetched successfully!",
+            data: projects
         })
     } catch(error){
         return res.status(500).json({
