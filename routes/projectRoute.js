@@ -7,17 +7,18 @@ const {
     postProjects,
     updateProjects,
     deleteProjects } = require('../controllers/projectController')
-const upload = require('../util.js/fileUpload')
+const { isAuth } = require('../middleware/auth')
+const upload = require('../utils/fileUpload')
 
 router 
     .route('/')
     .get(getProjects)
-    .post(upload.array('projectfiles',5),postProjects)
+    .post(upload.array('projectfiles',5),isAuth,postProjects)
 
 router 
     .route('/:id')
     .get(getSingleProject)
-    .put(updateProjects)
-    .delete(deleteProjects)
+    .put(isAuth,updateProjects)
+    .delete(isAuth,deleteProjects)
 
 module.exports = router
