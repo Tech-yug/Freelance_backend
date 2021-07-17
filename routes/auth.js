@@ -1,6 +1,7 @@
 const express = require("express");
 const {
   register,
+  verifyEmail,
   login,
   logout,
   updateUser,
@@ -13,6 +14,7 @@ const { isAuth } = require("../middleware/auth");
 
 router
   .post("/register", register)
+  .put("/confirmation/:token", verifyEmail)
   .post("/login", login)
   .get("/logout", logout)
   .put("/updateuser", isAuth, updateUser)

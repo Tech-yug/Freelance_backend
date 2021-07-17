@@ -22,6 +22,10 @@ const userSchema = new mongoose.Schema(
       required: [true, "Please enter an password"],
       minlength: [6, "Minimum password length is 6 characters"],
     },
+    verified: {
+      type: Boolean,
+      default: false,
+    },
     otpCode: String,
     otpCodeExpire: Date,
   },
